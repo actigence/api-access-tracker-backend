@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  A very simple AWS Serverless backend to store RESTful API access requests in DynamoDB
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  # Lambda function mapping for consuming log generation event from SQS and writing to DynamoDB
+  LogEventConsumerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: server/
+      Handler: app.logEventConsumer
+      Runtime: nodejs12.x
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt APIInvocationEventQueue.QueueName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref APIAccessLogs
+      Events:
+        ShortCodeGenerationSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt APIInvocationEventQueue.Arn
+            BatchSize: 1
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref APIAccessLogs
+          SQS_NAME: !Ref APIInvocationEventQueue
+
+  #DynamoDB Tables to store API invocation events
+  APIAccessLogs:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: aal_api_access_logs
+
+  #SQS Definitions
+  APIInvocationEventQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: aal_api_invocation_queue

@@ -1,0 +1,5 @@
+{
+  "requestURL": "https://www.example.com",
+  "httpMethod": "GET",
+  "httpResponse": 200
+}
