@@ -8,40 +8,76 @@ Globals:
     Timeout: 3
 
 Resources:
-  # Lambda function mapping for consuming log generation event from SQS and writing to DynamoDB
-  LogEventConsumerFunction:
+  # Lambda function mapping for consuming items in inbound request queue from SQS and writing them to DynamoDB
+  InboundRequestConsumerFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: server/
-      Handler: app.logEventConsumer
+      Handler: app.inboundRequestQueueConsumer
       Runtime: nodejs12.x
       Policies:
         - SQSPollerPolicy:
-            QueueName: !GetAtt APIInvocationEventQueue.QueueName
+            QueueName: !GetAtt InboundRequestLoggingQueue.QueueName
         - DynamoDBCrudPolicy:
-            TableName: !Ref APIAccessLogs
+            TableName: !Ref InboundAPIAccessLogs
       Events:
         ShortCodeGenerationSQSEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt APIInvocationEventQueue.Arn
+            Queue: !GetAtt InboundRequestLoggingQueue.Arn
             BatchSize: 1
       Environment:
         Variables:
-          TABLE_NAME: !Ref APIAccessLogs
-          SQS_NAME: !Ref APIInvocationEventQueue
+          INBOUND_TABLE_NAME: !Ref InboundAPIAccessLogs
+
+  # Lambda function mapping for consuming items in Outtbound request queue from SQS and writing them to DynamoDB
+  OutboundRequestConsumerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: server/
+      Handler: app.outboundRequestQueueConsumer
+      Runtime: nodejs12.x
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt OutboundRequestLoggingQueue.QueueName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref OutboundAPIAccessLogs
+      Events:
+        ShortCodeGenerationSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt OutboundRequestLoggingQueue.Arn
+            BatchSize: 1
+      Environment:
+        Variables:
+          OUTBOUND_TABLE_NAME: !Ref OutboundAPIAccessLogs
 
   #DynamoDB Tables to store API invocation events
-  APIAccessLogs:
+  InboundAPIAccessLogs:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
         Name: id
         Type: String
-      TableName: aal_api_access_logs
+      TableName: aal_inbound_api_access_logs
+
+  #DynamoDB Tables to store API invocation events
+  OutboundAPIAccessLogs:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: aal_outbound_api_access_logs
 
   #SQS Definitions
-  APIInvocationEventQueue:
+  InboundRequestLoggingQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: aal_api_invocation_queue
+      QueueName: aal_inbound_request_logging_queue
+
+  #SQS Definitions
+  OutboundRequestLoggingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: aal_outbound_request_logging_queue
