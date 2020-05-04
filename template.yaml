@@ -1,11 +1,25 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: api-access-tracker-backend
+    Description: A simple AWS serverless backend, for tracking and logging API request details to a webservice.
+    Author: Actigence Solutions
+    SpdxLicenseId: MIT
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['lambda', 'dynamodb', 'sqs']
+    HomePageUrl: https://github.com/Actigence/api-access-tracker-backend
+    SemanticVersion: 0.0.1
+    SourceCodeUrl: https://github.com/Actigence/api-access-tracker-backend
+
 Description: >
-  A very simple AWS Serverless backend to store RESTful API access requests in DynamoDB
+  A simple AWS serverless backend, for tracking and logging API request details to a webservice.
 
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 10
 
 Resources:
   # Lambda function mapping for consuming items in inbound request queue from SQS and writing them to DynamoDB

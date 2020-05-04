@@ -1,5 +1,7 @@
 # API Access Tracker (Backend)
 
+> One click deployment using [AWS Application Repositorry](https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:717292065848:applications/api-access-tracker-backend)
+
 This repository can be used to create backend service for tracking requests to webservices APIs. 
 
 This repository creates an independent **AWS** stack (using serverless technologies), that can be used to receive API 
@@ -44,7 +46,7 @@ Below is a step-by-step guide on how to setup every thing.
 
 **Setup the AWS Backend**
 1. Create an AWS Account or use your existing account.
-2. Setup this service by running the AWS stack.
+2. Deploy this service through [AWS SAM Repository](https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:717292065848:applications/api-access-tracker-backend)
 3. After the AWS Stack is setup successfully, you should see two SQS queues (starting with name `aal_`), 
 two Lambda functions (starting with name `aal_`) and two DynamoDB tables (starting with name `aal_`).
 4. Create an IAM user with programmatic credentials and provide it access to the created SQS queues. Below policy shows
