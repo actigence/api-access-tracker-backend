@@ -2,24 +2,24 @@
 
 > One click deployment using [AWS Application Repositorry](https://console.aws.amazon.com/lambda/home?region=us-east-1#/create/app?applicationId=arn:aws:serverlessrepo:us-east-1:717292065848:applications/api-access-tracker-backend)
 
-This repository can be used to create backend service for tracking requests to webservices APIs. 
+This repository can be used to create AWS services stack for tracking inbound and outbound requests to your webservices and REST APIs. 
 
 This repository creates an independent **AWS** stack (using serverless technologies), that can be used to receive API 
 access events and store them to AWS DynamoDB.
 
 ## Purpose
-If you want to log all requests made to your RESTFul web services, this repository will create an independent backend 
-to store access details of requests being made to your web services.
+If you want to log all requests made to or from your web services, you can setup the AWS stack through this repository,
+ and use provided clients to send data to the created AWS stack.
 
-These are many advantages of tracking requests to your web services:
+There are many advantages of tracking requests to your web services:
 * These logs can be used for API access auditing.
 * These logs trails can be helpful in debugging connection issues clients and service.
 * These logs can be used for various types of data analysis.
 
 ## How it works?
-This service works in conjunction with [API Access Tracker Client](#api-access-tracker-client), to receive and store API access events. 
+This service works in conjunction with [API Access Tracker Clients](#api-access-tracker-client), to receive and store API access events. 
 
-The [API Access Tracker Client](#api-access-tracker-client) generates AWS SQS events containing request and response details from your webservices, 
+The [API Access Tracker Clients](#api-access-tracker-client) generate AWS SQS events containing request and response details from your webservices, 
 which are consumed by this service.
 These AWS SQS events are processed by AWS Lambda functions and persisted in AWS DynamoDB.
 
@@ -39,7 +39,7 @@ Following AWS services are used, by this service:
 * AWS CloudWatch
 
 ## How to setup your webservices?
-You simply need to include one of the compatible [API Access Tracker Client](#api-access-tracker-client) in your project and setup this service 
+You simply need to include one of the compatible [API Access Tracker Clients](#api-access-tracker-client) in your project and setup this service 
 in your AWS account, to start tracking calls to your APIs (webservices).
 
 Below is a step-by-step guide on how to setup every thing.
@@ -79,6 +79,7 @@ That's it, now whenever you make a request to any webservices in your project, t
 ## API Access Tracker Client
 Currently available **API Access Tracker Client** implementations:
 
-|Repository      |Language                          |Demo Repository                         |
-|----------------|-------------------------------|-----------------------------|
-|[api-access-tracker-java-client](https://github.com/Actigence/api-access-tracker-java-client)|Java (Servlet) |[Demo](https://github.com/Actigence/api-access-tracker-java-client-demo) |
+|Request Direction |Repository      |Language                          |Demo Repository                         |
+|----|----------------|-------------------------------|-----------------------------|
+|Inbound |[api-access-tracker-java-client](https://github.com/actigence/api-access-tracker-java-client)|Java (Servlet) |[Demo](https://github.com/actigence/api-access-tracker-java-client-demo) |
+|Outbound |[resttemplate-request-logger](https://github.com/actigence/resttemplate-request-logger)|Java (Spring) |[Demo](https://github.com/actigence/resttemplate-request-logger-demo)|
